@@ -1,17 +1,42 @@
 package org.example;
+import org.example.databaseConnection;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        databaseConnection DB_Connection = new databaseConnection();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        Connection connection = DB_Connection.getConnection();
+
+        String query = "SELECT * FROM user";
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String userName = resultSet.getString("userName");
+                String password = resultSet.getString("password");
+
+                System.out.println("ID: " + id);
+                System.out.println("Name: " + name);
+                System.out.println("userName: " + userName);
+                System.out.println("password: " + password);
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
         }
     }
 }
