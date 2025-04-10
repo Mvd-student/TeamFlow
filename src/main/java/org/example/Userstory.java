@@ -1,6 +1,8 @@
 package org.example;
 
-public class Userstory {
+import java.util.List;
+
+public abstract class Userstory {
     private int id;
     private String title;
     private String description;
@@ -14,6 +16,9 @@ public class Userstory {
         this.epicId = epicId;
         this.sprintId = sprintId;
     }
+
+    public abstract void testProcess(String input);
+    public abstract List<String>getMessages();
 
     public int getId() {
         return id;
@@ -55,6 +60,7 @@ public class Userstory {
         this.sprintId = sprintId;
     }
 
+
     @Override
     public String toString() {
         return "Userstory{" +
@@ -65,4 +71,5 @@ public class Userstory {
                 ", sprintId=" + sprintId +
                 '}';
     }
+
 }

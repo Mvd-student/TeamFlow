@@ -1,20 +1,46 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Message {
+public class Message extends Userstory {
     private int id;
     private String content;
     private LocalDate dateTime;
     private int userId;   // Foreign key to User
     private int chatId;   // Foreign key to Chat
 
-    public Message(int id, String content, LocalDate dateTime, int userId, int chatId) {
+    private final List<String> messages = new ArrayList<>();
+
+    public Message(
+            int id,
+            String content,
+            LocalDate dateTime,
+            int userId,
+            int chatId,
+            int storyId,
+            String title,
+            String description,
+            int epicId,
+            int sprintId
+    ){
+        super(storyId, title, description, epicId, sprintId);
         this.id = id;
         this.content = content;
         this.dateTime = dateTime;
         this.userId = userId;
         this.chatId = chatId;
+    }
+
+
+    public void testProcess(String input) {
+        messages.add(input);
+        System.out.println("Verwerkte string: " + input.toUpperCase());
+    }
+
+    public List<String> getMessages() {
+        return messages;
     }
 
     public int getId() {
