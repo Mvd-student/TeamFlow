@@ -7,12 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        
+
         ArrayList<User> users = new ArrayList<User>();
 
 
@@ -44,13 +45,22 @@ public class Main {
             e.printStackTrace();
         }
 
+        System.out.println("What do you want to do?");
 
-        for(User user : users){
-            System.out.println("Id: " + user.getId());
-            System.out.println("Name: " + user.getName());
-            System.out.println("Username: " + user.getUsername());
-            System.out.println("Password: " + user.getPassword());
-            System.out.println();
-        }
+            Scanner scanner = new Scanner(System.in);
+
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "show users":
+                    for(User user : users){
+                        System.out.println("Id: " + user.getId());
+                        System.out.println("Name: " + user.getName());
+                        System.out.println("Username: " + user.getUsername());
+                        System.out.println("Password: " + user.getPassword());
+                        System.out.println();
+                    }
+                    break;
+            }
     }
 }
