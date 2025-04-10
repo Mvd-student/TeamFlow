@@ -5,8 +5,8 @@ import java.sql.SQLException;
 
 public class databaseConnection {
     public Connection databaseLink;
-    String url = "jdbc:mysql://127.0.0.1:3306/testdb";
-    String user = "testDbUser";
+    String url = "jdbc:mysql://127.0.0.1:3306/teamflow";
+    String user = "teamFlowUser";
     String password = "test123";
 
     public Connection getConnection() {

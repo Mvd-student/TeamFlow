@@ -21,10 +21,10 @@ public class Main {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String userName = resultSet.getString("userName");
-                String password = resultSet.getString("password");
+                int id = resultSet.getInt("Id");
+                String name = resultSet.getString("Name");
+                String userName = resultSet.getString("Username");
+                String password = resultSet.getString("Password");
 
                 System.out.println("ID: " + id);
                 System.out.println("Name: " + name);
