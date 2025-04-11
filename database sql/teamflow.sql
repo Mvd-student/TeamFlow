@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `teamflow` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
-USE `teamflow`;
 -- MySQL dump 10.13  Distrib 8.0.13, for Win64 (x86_64)
 --
 -- Host: localhost    Database: teamflow
@@ -57,7 +55,7 @@ CREATE TABLE `epic` (
   `Epic_naam` varchar(255) NOT NULL,
   `End_date` date DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +64,7 @@ CREATE TABLE `epic` (
 
 LOCK TABLES `epic` WRITE;
 /*!40000 ALTER TABLE `epic` DISABLE KEYS */;
+INSERT INTO `epic` VALUES (1,'test epic 1','2025-04-26'),(2,'test epic 2','2025-07-20'),(3,'test epic 3','2025-08-22');
 /*!40000 ALTER TABLE `epic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,7 +111,7 @@ CREATE TABLE `sprint` (
   `Start_date` date DEFAULT NULL,
   `End_date` date DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,6 +120,7 @@ CREATE TABLE `sprint` (
 
 LOCK TABLES `sprint` WRITE;
 /*!40000 ALTER TABLE `sprint` DISABLE KEYS */;
+INSERT INTO `sprint` VALUES (1,'test sprint 1','2025-02-22','2025-03-22'),(2,'test sprint 2','2025-03-23','2025-04-22'),(3,'test sprint 3','2025-04-23','2025-05-22');
 /*!40000 ALTER TABLE `sprint` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,4 +219,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-08 15:04:03
+-- Dump completed on 2025-04-11 11:54:23
