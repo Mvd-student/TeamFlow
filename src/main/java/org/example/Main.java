@@ -2,13 +2,11 @@ package org.example;
 import org.example.databaseConnection;
 import org.example.User;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,6 +72,10 @@ public class Main {
                         System.out.println();
                     }
                     break;
+                case "show chats by userstory":
+                    showChatsByUserstory();
+                    break;
+
                 case "close app":
                     usingApp = false;
                     break;
@@ -82,6 +84,47 @@ public class Main {
 
 
     }
+
+    public static void showChatsByUserstory() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter Userstory ID: ");
+        int userstoryId = scanner.nextInt();
+
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+
+        String query = "SELECT c.id, c.name FROM chat c WHERE c.userstoryId = ?";
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userstoryId);
+            ResultSet resultSet = statement.executeQuery();
+
+            boolean found = false;
+
+            System.out.println("Chats with this userstory ID " + userstoryId + ":");
+            while (resultSet.next()) {
+                found = true;
+                int chatId = resultSet.getInt("id");
+                String chatName = resultSet.getString("name");
+                System.out.println("Chat ID: " + chatId + " | name: " + chatName);
+            }
+
+            if (!found) {
+                System.out.println("No chats found with this userstory ID.");
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Something went wrong.");
+            e.printStackTrace();
+        }
+    }
+
 
     public static void loadUsers(ArrayList<User> users) {
         databaseConnection DB_Connection = new databaseConnection();
