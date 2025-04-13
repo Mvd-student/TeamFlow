@@ -12,7 +12,7 @@ public class Message {
     public Message(int id, String content, LocalDate dateTime, int userId, int chatId) {
         this.id = id;
         this.content = content;
-        this.dateTime = dateTime;
+        this.dateTime = LocalDate.now();
         this.userId = userId;
         this.chatId = chatId;
     }
