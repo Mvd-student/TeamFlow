@@ -56,11 +56,12 @@ public class Main {
                     clearTerminal();
                     System.out.println("-> Show Users");
                     System.out.println("-> Show Chats");
-                    System.out.println("-> Show epics");
-                    System.out.println("-> Show sprints");
-                    System.out.println("-> Show userstories");
-                    System.out.println("-> Current user");
-                    System.out.println("-> Close app");
+                    System.out.println("-> Show Epics");
+                    System.out.println("-> Insert Epic");
+                    System.out.println("-> Show Sprints");
+                    System.out.println("-> Show Userstories");
+                    System.out.println("-> Current User");
+                    System.out.println("-> Close App");
                     System.out.println();
                     break;
                 case "current user":
@@ -98,6 +99,9 @@ public class Main {
                             System.out.println();
                         }
                         break;
+                case "insert epic":
+                    insertIntoEpic();
+                    break;
                 case "show userstories":
                     clearTerminal();
                     for(Userstory userstory : userstories){
@@ -249,6 +253,46 @@ public class Main {
         }
 
     }
+
+    public static void insertIntoEpic() {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Please enter Epic name:");
+            String epicName = scanner.nextLine();
+
+            System.out.println("Please enter Epic end date (YYYY-MM-DD):");
+            String endDateStr = scanner.nextLine();
+
+            // Parse the string into LocalDate and then convert to SQL Date
+            LocalDate endDate = LocalDate.parse(endDateStr);
+            Date sqlEndDate = Date.valueOf(endDate);
+
+            String query = "INSERT INTO epic (Epic_naam, End_date) VALUES (?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, epicName);
+            preparedStatement.setDate(2, sqlEndDate);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Epic inserted successfully!");
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("SQL Error:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Input or parsing error:");
+            e.printStackTrace();
+        }
+    }
+
 
 
     public static void loadEpics(ArrayList<Epic> epics) {
