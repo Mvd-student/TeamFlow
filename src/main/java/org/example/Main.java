@@ -30,6 +30,7 @@ public class Main {
         loadUserstories(userstories);
 
         ArrayList<Chat> chats = new ArrayList<Chat>();
+        loadChats(chats);
 
 
 
@@ -54,9 +55,11 @@ public class Main {
                 case "help":
                     clearTerminal();
                     System.out.println("-> Show Users");
-                    System.out.println("-> show epics");
-                    System.out.println("-> show sprints");
-                    System.out.println("-> show userstories");
+                    System.out.println("-> Show Chats");
+                    System.out.println("-> Show epics");
+                    System.out.println("-> Show sprints");
+                    System.out.println("-> Show userstories");
+                    System.out.println("-> Current user");
                     System.out.println("-> Close app");
                     System.out.println();
                     break;
@@ -66,10 +69,20 @@ public class Main {
                     System.out.println("Current user name:" + CurrentUser.getLoggedInUser().getUsername());
                     System.out.println("Current user username:" + CurrentUser.getLoggedInUser().getUsername());
                     System.out.println("Current user password:" + CurrentUser.getLoggedInUser().getPassword());
+                    break;
+                case "show chats":
+                    clearTerminal();
+                    for(Chat chat : chats){
+                        System.out.println("Chat id: " + chat.getId());
+                        System.out.println("Userstory id: " + chat.getUserstoryId());
+                        System.out.println("Sprint id: " + chat.getSprintId());
+                        System.out.println();
+                    }
+                    break;
                 case "show users":
                     clearTerminal();
                     for(User user : users){
-                        System.out.println("Id: " + user.getId());
+                        System.out.println("User id: " + user.getId());
                         System.out.println("Name: " + user.getName());
                         System.out.println("Username: " + user.getUsername());
                         System.out.println("Password: " + user.getPassword());
@@ -79,7 +92,7 @@ public class Main {
                     case "show epics":
                         clearTerminal();
                         for(Epic epic : epics){
-                            System.out.println("Id: " + epic.getId());
+                            System.out.println("Epic id: " + epic.getId());
                             System.out.println("Name: " + epic.getEpicNaam());
                             System.out.println("End date: " + epic.getEndDate());
                             System.out.println();
@@ -88,7 +101,7 @@ public class Main {
                 case "show userstories":
                     clearTerminal();
                     for(Userstory userstory : userstories){
-                        System.out.println("Id: " + userstory.getId());
+                        System.out.println("Userstory id: " + userstory.getId());
                         System.out.println("Title: " + userstory.getTitle());
                         System.out.println("Description: " + userstory.getDescription());
                         System.out.println("Epic id: " + userstory.getEpicId());
@@ -99,18 +112,13 @@ public class Main {
                 case "show sprints":
                     clearTerminal();
                     for(Sprint sprint : sprints){
-                        System.out.println("Id: " + sprint.getId());
+                        System.out.println("Sprint id: " + sprint.getId());
                         System.out.println("Name: " + sprint.getSprintNaam());
                         System.out.println("Start date: " + sprint.getStartDate());
                         System.out.println("End date: " + sprint.getEndDate());
                         System.out.println();
                     }
                     break;
-                case "show chats by userstory":
-                    clearTerminal();
-                    showChatsByUserstory();
-                    break;
-
                 case "close app":
                     usingApp = false;
                     break;
@@ -152,48 +160,6 @@ public class Main {
     }
 
 
-
-    public static void showChatsByUserstory() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Enter Userstory ID: ");
-        int userstoryId = scanner.nextInt();
-
-        databaseConnection DB_Connection = new databaseConnection();
-        Connection connection = DB_Connection.getConnection();
-
-        String query = "SELECT c.id, c.name FROM chat c WHERE c.userstoryId = ?";
-
-        try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, userstoryId);
-            ResultSet resultSet = statement.executeQuery();
-
-            boolean found = false;
-
-            System.out.println("Chats with this userstory ID " + userstoryId + ":");
-            while (resultSet.next()) {
-                found = true;
-                int chatId = resultSet.getInt("id");
-                String chatName = resultSet.getString("name");
-                System.out.println("Chat ID: " + chatId + " | name: " + chatName);
-            }
-
-            if (!found) {
-                System.out.println("No chats found with this userstory ID.");
-            }
-
-            resultSet.close();
-            statement.close();
-            connection.close();
-
-        } catch (SQLException e) {
-            System.out.println("Something went wrong.");
-            e.printStackTrace();
-        }
-    }
-
-
     public static void loadUsers(ArrayList<User> users) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
@@ -222,6 +188,34 @@ public class Main {
             e.printStackTrace();
         }
 
+    }
+
+    public static void loadChats(ArrayList<Chat> chats) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+
+        String query = "SELECT * FROM chat";
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                int id = resultSet.getInt("Id");
+                int userstoryId = resultSet.getInt("Userstory_Id");
+                int sprintId = resultSet.getInt("Sprint_Id");
+
+                new Chat(id, userstoryId, sprintId);
+                chats.add(new Chat(id, userstoryId, sprintId));
+
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 
