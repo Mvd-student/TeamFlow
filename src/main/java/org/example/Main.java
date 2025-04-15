@@ -24,12 +24,20 @@ public class Main {
         ArrayList<Sprint> sprints = new ArrayList<Sprint>();
         loadSprints(sprints);
 
+
+
+        ArrayList<Userstory> userstories = new ArrayList<Userstory>();
+        loadUserstories(userstories);
+
+        ArrayList<Chat> chats = new ArrayList<Chat>();
+
+
+
         boolean loggedIn = false;
 
         while (CurrentUser.getLoggedInUser() == null) {
             login(users);
         }
-
 
 
         boolean usingApp = true;
@@ -44,13 +52,22 @@ public class Main {
 
             switch (input.toLowerCase()) {
                 case "help":
+                    clearTerminal();
                     System.out.println("-> Show Users");
                     System.out.println("-> show epics");
                     System.out.println("-> show sprints");
+                    System.out.println("-> show userstories");
                     System.out.println("-> Close app");
                     System.out.println();
                     break;
+                case "current user":
+                    clearTerminal();
+                    System.out.println("Current user id:" + CurrentUser.getLoggedInUser().getId());
+                    System.out.println("Current user name:" + CurrentUser.getLoggedInUser().getUsername());
+                    System.out.println("Current user username:" + CurrentUser.getLoggedInUser().getUsername());
+                    System.out.println("Current user password:" + CurrentUser.getLoggedInUser().getPassword());
                 case "show users":
+                    clearTerminal();
                     for(User user : users){
                         System.out.println("Id: " + user.getId());
                         System.out.println("Name: " + user.getName());
@@ -60,6 +77,7 @@ public class Main {
                     }
                     break;
                     case "show epics":
+                        clearTerminal();
                         for(Epic epic : epics){
                             System.out.println("Id: " + epic.getId());
                             System.out.println("Name: " + epic.getEpicNaam());
@@ -67,7 +85,19 @@ public class Main {
                             System.out.println();
                         }
                         break;
+                case "show userstories":
+                    clearTerminal();
+                    for(Userstory userstory : userstories){
+                        System.out.println("Id: " + userstory.getId());
+                        System.out.println("Title: " + userstory.getTitle());
+                        System.out.println("Description: " + userstory.getDescription());
+                        System.out.println("Epic id: " + userstory.getEpicId());
+                        System.out.println("Sprint id: " + userstory.getSprintId());
+                        System.out.println();
+                    }
+                    break;
                 case "show sprints":
+                    clearTerminal();
                     for(Sprint sprint : sprints){
                         System.out.println("Id: " + sprint.getId());
                         System.out.println("Name: " + sprint.getSprintNaam());
@@ -77,6 +107,7 @@ public class Main {
                     }
                     break;
                 case "show chats by userstory":
+                    clearTerminal();
                     showChatsByUserstory();
                     break;
 
@@ -102,15 +133,25 @@ public class Main {
         for(User user : users){
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
                 CurrentUser.setLoggedInUser(user);
+                loggedIn = true;
                 System.out.println("Welcome " + CurrentUser.getLoggedInUser().getUsername() + " (" + CurrentUser.getLoggedInUser().getName()+ ")");
             }
         }
 
         if(!loggedIn){
+            clearTerminal();
             System.out.println("Incorrect username or password, please try again.");
             System.out.println();
         }
     }
+
+    public static void clearTerminal() {
+        for (int i = 0; i < 100; i++) {
+            System.out.println();
+        }
+    }
+
+
 
     public static void showChatsByUserstory() {
         Scanner scanner = new Scanner(System.in);
@@ -182,6 +223,39 @@ public class Main {
         }
 
     }
+
+
+    public static void loadUserstories(ArrayList<Userstory> userstories) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+
+        String query = "SELECT * FROM userstory";
+
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                int id = resultSet.getInt("Id");
+                String title = resultSet.getString("Title");
+                String description = resultSet.getString("Description");
+                int epicId = resultSet.getInt("Epic_id");
+                int SprintId = resultSet.getInt("Sprint_id");
+
+                new Userstory(id, title, description, epicId, SprintId);
+                userstories.add(new Userstory(id, title, description, epicId, SprintId));
+
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+
 
     public static void loadEpics(ArrayList<Epic> epics) {
         databaseConnection DB_Connection = new databaseConnection();
