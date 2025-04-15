@@ -24,7 +24,11 @@ public class Main {
         ArrayList<Sprint> sprints = new ArrayList<Sprint>();
         loadSprints(sprints);
 
+        boolean loggedIn = false;
 
+        while (CurrentUser.getLoggedInUser() == null) {
+            login(users);
+        }
 
 
 
@@ -83,6 +87,29 @@ public class Main {
         }
 
 
+    }
+
+    public static void login(ArrayList<User> users) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scanner.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scanner.nextLine();
+
+        boolean loggedIn = false;
+
+        for(User user : users){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                CurrentUser.setLoggedInUser(user);
+                System.out.println("Welcome " + CurrentUser.getLoggedInUser().getUsername() + " (" + CurrentUser.getLoggedInUser().getName()+ ")");
+            }
+        }
+
+        if(!loggedIn){
+            System.out.println("Incorrect username or password, please try again.");
+            System.out.println();
+        }
     }
 
     public static void showChatsByUserstory() {
