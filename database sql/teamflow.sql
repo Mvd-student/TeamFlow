@@ -31,7 +31,7 @@ CREATE TABLE `chat` (
   KEY `Sprint_Id` (`Sprint_Id`),
   CONSTRAINT `chat_ibfk_1` FOREIGN KEY (`Userstory_Id`) REFERENCES `userstory` (`id`),
   CONSTRAINT `chat_ibfk_2` FOREIGN KEY (`Sprint_Id`) REFERENCES `sprint` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +40,7 @@ CREATE TABLE `chat` (
 
 LOCK TABLES `chat` WRITE;
 /*!40000 ALTER TABLE `chat` DISABLE KEYS */;
+INSERT INTO `chat` VALUES (1,1,1),(2,2,2),(3,3,3);
 /*!40000 ALTER TABLE `chat` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -55,7 +56,7 @@ CREATE TABLE `epic` (
   `Epic_naam` varchar(255) NOT NULL,
   `End_date` date DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +87,7 @@ CREATE TABLE `message` (
   KEY `Chat_Id` (`Chat_Id`),
   CONSTRAINT `message_ibfk_1` FOREIGN KEY (`User_Id`) REFERENCES `user` (`id`),
   CONSTRAINT `message_ibfk_2` FOREIGN KEY (`Chat_Id`) REFERENCES `chat` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,6 +96,7 @@ CREATE TABLE `message` (
 
 LOCK TABLES `message` WRITE;
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
+INSERT INTO `message` VALUES (1,'This is a test message in chat 1','2025-04-15',2,1),(2,'This is a test message in chat 2','2025-04-15',2,2),(3,'This is a test message in chat 3','2025-04-15',2,3);
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,7 +200,7 @@ CREATE TABLE `userstory` (
   KEY `Sprint_id` (`Sprint_id`),
   CONSTRAINT `userstory_ibfk_1` FOREIGN KEY (`Epic_id`) REFERENCES `epic` (`id`),
   CONSTRAINT `userstory_ibfk_2` FOREIGN KEY (`Sprint_id`) REFERENCES `sprint` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,6 +209,7 @@ CREATE TABLE `userstory` (
 
 LOCK TABLES `userstory` WRITE;
 /*!40000 ALTER TABLE `userstory` DISABLE KEYS */;
+INSERT INTO `userstory` VALUES (1,'Updated Userstory 1','Updated description of Userstory 1',1,1),(2,'Updated Userstory 2','Updated description of Userstory 2',2,2),(3,'Updated Userstory 3','Updated description of Userstory 3',3,3);
 /*!40000 ALTER TABLE `userstory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -219,4 +222,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-15 15:13:54
+-- Dump completed on 2025-04-15 16:46:39
