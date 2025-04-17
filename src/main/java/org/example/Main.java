@@ -24,13 +24,14 @@ public class Main {
         ArrayList<Sprint> sprints = new ArrayList<Sprint>();
         loadSprints(sprints);
 
-
-
         ArrayList<Userstory> userstories = new ArrayList<Userstory>();
         loadUserstories(userstories);
 
         ArrayList<Chat> chats = new ArrayList<Chat>();
         loadChats(chats);
+
+        ArrayList<Message> messages = new ArrayList<Message>();
+        loadMessages(messages);
 
 
 
@@ -55,15 +56,46 @@ public class Main {
                 case "help":
                     clearTerminal();
                     System.out.println("-> Show Users");
-                    System.out.println("-> Show Chats");
+                    System.out.println("-> Show Chatlist");
+                    System.out.println("-> Insert Chat");
                     System.out.println("-> Show Epics");
                     System.out.println("-> Insert Epic");
                     System.out.println("-> Show Sprints");
                     System.out.println("-> Show Userstories");
+                    System.out.println("-> Insert Userstory");
+                    System.out.println("-> Show All Messages");
+                    System.out.println("-> Show Chat");
                     System.out.println("-> Current User");
                     System.out.println("-> Close App");
                     System.out.println();
                     break;
+                    case "show chat":
+                        for(Chat chat : chats){
+                            System.out.println("Chat id: " + chat.getId());
+                            for(Userstory userstory : userstories){
+                                if(userstory.getId() == chat.getUserstoryId()){
+                                    System.out.println("Userstory title: " + userstory.getTitle());
+                                }
+                            }
+                        }
+                        System.out.println("What chat do you want to open? (Enter chat ID)");
+                        int chatIDHolder = scanner.nextInt();
+                        for(Message message : messages){
+                            if(message.getChatId() == chatIDHolder){
+                                for(User user : users){
+                                    if(user.getId() == message.getUserId()){
+                                        System.out.println("User: " + user.getName());
+                                    }
+                                    else{}
+                                }
+                                    System.out.println("Message id: " + message.getId());
+                                    System.out.println("Chat id: " + message.getChatId());
+                                    System.out.println("Date send: " + message.getDateTime());
+                                    System.out.println("Content: " + message.getContent());
+                                    System.out.println();
+                            }
+                        }
+                        break;
                 case "current user":
                     clearTerminal();
                     System.out.println("Current user id:" + CurrentUser.getLoggedInUser().getId());
@@ -71,7 +103,23 @@ public class Main {
                     System.out.println("Current user username:" + CurrentUser.getLoggedInUser().getUsername());
                     System.out.println("Current user password:" + CurrentUser.getLoggedInUser().getPassword());
                     break;
-                case "show chats":
+                case "show all messages":
+                    clearTerminal();
+                    for(Message message : messages){
+                        for(User user : users){
+                            if(user.getId() == message.getUserId()){
+                                System.out.println("User: " + user.getName());
+                            }
+                            else{}
+                        }
+                        System.out.println("Message id: " + message.getId());
+                        System.out.println("Chat id: " + message.getChatId());
+                        System.out.println("Date send: " + message.getDateTime());
+                        System.out.println("Content: " + message.getContent());
+                        System.out.println();
+                    }
+                    break;
+                case "show chatlist":
                     clearTerminal();
                     for(Chat chat : chats){
                         System.out.println("Chat id: " + chat.getId());
@@ -79,6 +127,9 @@ public class Main {
                         System.out.println("Sprint id: " + chat.getSprintId());
                         System.out.println();
                     }
+                    break;
+                case "insert chat":
+                    insertIntoChat(userstories, sprints);
                     break;
                 case "show users":
                     clearTerminal();
@@ -113,6 +164,9 @@ public class Main {
                         System.out.println();
                     }
                     break;
+                case "insert userstory":
+                    insertIntoUserstory(epics, sprints);
+                    break;
                 case "show sprints":
                     clearTerminal();
                     for(Sprint sprint : sprints){
@@ -122,6 +176,9 @@ public class Main {
                         System.out.println("End date: " + sprint.getEndDate());
                         System.out.println();
                     }
+                    break;
+                case "insert sprint":
+                    insertIntoSprint();
                     break;
                 case "close app":
                     usingApp = false;
@@ -222,6 +279,57 @@ public class Main {
         }
     }
 
+    public static void insertIntoChat(ArrayList<Userstory> userstories, ArrayList<Sprint> sprints) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            // Show existing Userstories
+            System.out.println("Available Userstories:");
+            for (Userstory userstory : userstories) {
+                System.out.println("Userstory id: " + userstory.getId() + " | Title: " + userstory.getTitle());
+            }
+            System.out.println();
+
+            System.out.println("Please enter Userstory ID (must exist in Userstory table):");
+            int userstoryId = Integer.parseInt(scanner.nextLine());
+
+            // Show existing Sprints
+            System.out.println("Available Sprints:");
+            for (Sprint sprint : sprints) {
+                System.out.println("Sprint id: " + sprint.getId() + " | Name: " + sprint.getSprintNaam());
+            }
+            System.out.println();
+
+            System.out.println("Please enter Sprint ID (must exist in Sprint table):");
+            int sprintId = Integer.parseInt(scanner.nextLine());
+
+            // Insert into database
+            String query = "INSERT INTO chat (Userstory_Id, Sprint_Id) VALUES (?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, userstoryId);
+            preparedStatement.setInt(2, sprintId);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Chat inserted successfully!");
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("SQL Error:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Input or parsing error:");
+            e.printStackTrace();
+        }
+    }
+
+
 
     public static void loadUserstories(ArrayList<Userstory> userstories) {
         databaseConnection DB_Connection = new databaseConnection();
@@ -253,6 +361,63 @@ public class Main {
         }
 
     }
+
+
+    public static void insertIntoUserstory(ArrayList<Epic> epics, ArrayList<Sprint> sprints) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Please enter Userstory title:");
+            String title = scanner.nextLine();
+
+            System.out.println("Please enter Userstory description:");
+            String description = scanner.nextLine();
+
+            for(Epic epic : epics){
+                System.out.println("Epic id: " + epic.getId());
+                System.out.println("Name: " + epic.getEpicNaam());
+                System.out.println();
+            }
+            System.out.println();
+            System.out.println("Please enter Epic ID (must exist in Epic table):");
+            int epicId = Integer.parseInt(scanner.nextLine());
+
+            for(Sprint sprint : sprints){
+                System.out.println("Sprint id: " + sprint.getId());
+                System.out.println("Name: " + sprint.getSprintNaam());
+                System.out.println();
+            }
+            System.out.println();
+            System.out.println("Please enter Sprint ID (must exist in Sprint table):");
+            int sprintId = Integer.parseInt(scanner.nextLine());
+
+            String query = "INSERT INTO userstory (Title, Description, Epic_id, Sprint_id) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, description);
+            preparedStatement.setInt(3, epicId);
+            preparedStatement.setInt(4, sprintId);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Userstory inserted successfully!");
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("SQL Error:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Input or parsing error:");
+            e.printStackTrace();
+        }
+    }
+
 
     public static void insertIntoEpic() {
         databaseConnection DB_Connection = new databaseConnection();
@@ -292,6 +457,38 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static void loadMessages(ArrayList<Message> messages) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+
+        String query = "SELECT * FROM message";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("Id");
+                int chatId = resultSet.getInt("Chat_id");
+                int userId = resultSet.getInt("User_id");
+                String content = resultSet.getString("Content");
+                Timestamp timestamp = resultSet.getTimestamp("DateTime");
+
+                LocalDate date = timestamp.toLocalDateTime().toLocalDate();  // <-- Correct type
+
+                Message message = new Message(id, content, date, userId, chatId);
+                messages.add(message);
+            }
+
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 
@@ -357,6 +554,51 @@ public class Main {
             e.printStackTrace();
         }
 
+    }
+    public static void insertIntoSprint() {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            System.out.println("Please enter Sprint name:");
+            String sprintName = scanner.nextLine();
+
+            System.out.println("Please enter Start date (YYYY-MM-DD):");
+            String startDateStr = scanner.nextLine();
+
+            System.out.println("Please enter End date (YYYY-MM-DD):");
+            String endDateStr = scanner.nextLine();
+
+            // Parse the strings into LocalDate and then to SQL Date
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            LocalDate endDate = LocalDate.parse(endDateStr);
+
+            Date sqlStartDate = Date.valueOf(startDate);
+            Date sqlEndDate = Date.valueOf(endDate);
+
+            String query = "INSERT INTO Sprint (Sprint_naam, Start_date, End_date) VALUES (?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, sprintName);
+            preparedStatement.setDate(2, sqlStartDate);
+            preparedStatement.setDate(3, sqlEndDate);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Sprint inserted successfully!");
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("SQL Error:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Input or parsing error:");
+            e.printStackTrace();
+        }
     }
 
 
