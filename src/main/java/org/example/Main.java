@@ -65,6 +65,7 @@ public class Main {
                     System.out.println("-> Insert Userstory");
                     System.out.println("-> Show All Messages");
                     System.out.println("-> Show Chat");
+                    System.out.println("-> Send Message");
                     System.out.println("-> Current User");
                     System.out.println("-> Close App");
                     System.out.println();
@@ -96,6 +97,9 @@ public class Main {
                             }
                         }
                         break;
+                case "send message":
+                    insertMessage(chats, userstories);
+                    break;
                 case "current user":
                     clearTerminal();
                     System.out.println("Current user id:" + CurrentUser.getLoggedInUser().getId());
@@ -188,6 +192,58 @@ public class Main {
 
 
     }
+
+    public static void insertMessage(ArrayList<Chat> chats, ArrayList<Userstory> userstories) {
+        databaseConnection DB_Connection = new databaseConnection();
+        Connection connection = DB_Connection.getConnection();
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            // Display available chats
+            for (Chat chat : chats) {
+                System.out.println("Chat id: " + chat.getId());
+                for (Userstory userstory : userstories) {
+                    if (userstory.getId() == chat.getUserstoryId()) {
+                        System.out.println("Userstory title: " + userstory.getTitle());
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println("In which chat do you want to send a message? (give chat Id):");
+            int chatId = scanner.nextInt();
+            scanner.nextLine(); // Consume leftover newline
+
+            System.out.println("Enter your message:");
+            String content = scanner.nextLine();
+
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(System.currentTimeMillis()); // Current timestamp
+
+            String query = "INSERT INTO message (Chat_id, User_id, Content, DateTime) VALUES (?, ?, ?, ?)";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, chatId);
+            preparedStatement.setInt(2, CurrentUser.getLoggedInUser().getId());
+            preparedStatement.setString(3, content);
+            preparedStatement.setTimestamp(4, timestamp);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                System.out.println("Message inserted successfully!");
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("SQL Error:");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Input or parsing error:");
+            e.printStackTrace();
+        }
+    }
+
+
 
     public static void login(ArrayList<User> users) {
         Scanner scanner = new Scanner(System.in);
