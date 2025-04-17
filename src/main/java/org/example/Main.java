@@ -98,7 +98,7 @@ public class Main {
                         }
                         break;
                 case "send message":
-                    insertMessage(chats, userstories);
+                    insertMessage(chats, userstories, messages);
                     break;
                 case "current user":
                     clearTerminal();
@@ -133,7 +133,7 @@ public class Main {
                     }
                     break;
                 case "insert chat":
-                    insertIntoChat(userstories, sprints);
+                    insertIntoChat(userstories, sprints, chats);
                     break;
                 case "show users":
                     clearTerminal();
@@ -155,7 +155,7 @@ public class Main {
                         }
                         break;
                 case "insert epic":
-                    insertIntoEpic();
+                    insertIntoEpic(epics);
                     break;
                 case "show userstories":
                     clearTerminal();
@@ -169,7 +169,7 @@ public class Main {
                     }
                     break;
                 case "insert userstory":
-                    insertIntoUserstory(epics, sprints);
+                    insertIntoUserstory(epics, sprints, userstories);
                     break;
                 case "show sprints":
                     clearTerminal();
@@ -182,7 +182,7 @@ public class Main {
                     }
                     break;
                 case "insert sprint":
-                    insertIntoSprint();
+                    insertIntoSprint(sprints);
                     break;
                 case "close app":
                     usingApp = false;
@@ -193,7 +193,7 @@ public class Main {
 
     }
 
-    public static void insertMessage(ArrayList<Chat> chats, ArrayList<Userstory> userstories) {
+    public static void insertMessage(ArrayList<Chat> chats, ArrayList<Userstory> userstories, ArrayList<Message> messages) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -230,7 +230,11 @@ public class Main {
 
             if (rowsInserted > 0) {
                 System.out.println("Message inserted successfully!");
+
+                messages.clear();
+                loadMessages(messages);
             }
+
 
             preparedStatement.close();
             connection.close();
@@ -335,7 +339,7 @@ public class Main {
         }
     }
 
-    public static void insertIntoChat(ArrayList<Userstory> userstories, ArrayList<Sprint> sprints) {
+    public static void insertIntoChat(ArrayList<Userstory> userstories, ArrayList<Sprint> sprints, ArrayList<Chat> chats) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -372,6 +376,9 @@ public class Main {
 
             if (rowsInserted > 0) {
                 System.out.println("Chat inserted successfully!");
+
+                chats.clear();
+                loadChats(chats);
             }
 
             preparedStatement.close();
@@ -419,7 +426,7 @@ public class Main {
     }
 
 
-    public static void insertIntoUserstory(ArrayList<Epic> epics, ArrayList<Sprint> sprints) {
+    public static void insertIntoUserstory(ArrayList<Epic> epics, ArrayList<Sprint> sprints, ArrayList<Userstory> userstories) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -461,6 +468,9 @@ public class Main {
 
             if (rowsInserted > 0) {
                 System.out.println("Userstory inserted successfully!");
+
+                userstories.clear();
+                loadUserstories(userstories);
             }
 
             preparedStatement.close();
@@ -475,7 +485,7 @@ public class Main {
     }
 
 
-    public static void insertIntoEpic() {
+    public static void insertIntoEpic(ArrayList<Epic> epics) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -501,6 +511,9 @@ public class Main {
 
             if (rowsInserted > 0) {
                 System.out.println("Epic inserted successfully!");
+
+                epics.clear();
+                loadEpics(epics);
             }
 
             preparedStatement.close();
@@ -611,7 +624,7 @@ public class Main {
         }
 
     }
-    public static void insertIntoSprint() {
+    public static void insertIntoSprint(ArrayList<Sprint> sprints) {
         databaseConnection DB_Connection = new databaseConnection();
         Connection connection = DB_Connection.getConnection();
         Scanner scanner = new Scanner(System.in);
@@ -644,6 +657,9 @@ public class Main {
 
             if (rowsInserted > 0) {
                 System.out.println("Sprint inserted successfully!");
+
+                sprints.clear();
+                loadSprints(sprints);
             }
 
             preparedStatement.close();
